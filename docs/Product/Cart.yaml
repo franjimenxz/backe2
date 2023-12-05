@@ -1,0 +1,515 @@
+paths:
+  /api/carts:
+    get:
+      tags:
+        - Cart
+      summary: Get all carts
+      responses:
+        200:
+          description: OK
+          content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                carts:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Cart"
+        400:
+          description: error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "error message"
+                  payload:
+                    type: array
+    post:
+      tags:
+        - Cart
+      summary: Create a new cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Product"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  cart:
+                    $ref: "#/components/schemas/Cart"
+        400:
+          description: error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "error message"
+                  payload:
+                    type: array
+  /api/carts/:cid:
+    get:
+      tags:
+        - Cart
+      summary: Get a cart by id
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  cart:
+                    $ref: "#/components/schemas/Cart"
+                example:
+                  status: success
+                  payload:
+                    _id: 5f9b3b3b3b3b3b3b3b3b3b3b
+                    products:
+                      - quantity: 1
+                        product:
+                          _id: 5f9b3b3b3b3b3b3b3b3b3b3b
+                          title: Product title
+                          description: Product description
+                          price: 1000
+                          thumbnail: Product thumbnail
+                          code: Product code
+                          stock: 100
+                          status: Product status
+                          category: Product category
+        400:
+          description: error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "error message"
+                  payload:
+                    type: array
+    put:
+      tags:
+        - Cart
+      summary: Update a cart by id
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart id
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/updateCart"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  cart:
+                    $ref: "#/components/schemas/Cart"
+        400:
+          description: error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "error message"
+                  payload:
+                    type: array
+    delete:
+      tags:
+        - Cart
+      summary: Delete a cart by id
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  cart:
+                    $ref: "#/components/schemas/Cart"
+        400:
+          description: error
+          content: application/json
+  /api/carts/:cid/products/:pid:
+    post:
+      tags:
+        - Cart
+      summary: Add a product to a cart by id
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart id
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: Product id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/addProductToCart"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  cart:
+                    $ref: "#/components/schemas/Cart"
+        400:
+          description: error
+          content: application/json
+    put:
+      tags:
+        - Cart
+      summary: Update a product in a cart by id
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart id
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: Product id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/o"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  cart:
+                    $ref: "#/components/schemas/Cart"
+        400:
+          description: error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "error message"
+                  payload:
+                    type: array
+    delete:
+      tags:
+        - Cart
+      summary: Delete a product in a cart by id
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart id
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: Product id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  cart:
+                    $ref: "#/components/schemas/Cart"
+        400:
+          description: error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "error message"
+                  payload:
+                    type: array
+  /api/carts/:cid/purchase:
+    post:
+      tags:
+        - Cart
+      summary: Purchase a cart by id
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart id
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  cart:
+                    $ref: "#/components/schemas/Cart"
+        400:
+          description: error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "error message"
+                  payload:
+                    type: array
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+        products:
+          type: array
+          $ref: "#/components/schemas/ProductCart"
+    ProductCart:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          description: Product quantity
+        product:
+          type: object
+          $ref: "#/components/schemas/Product"
+    Product:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Product id
+        title:
+          type: string
+          description: Product title
+        description:
+          type: string
+          description: Product description
+        price:
+          type: integer
+          description: Product price
+        thumbnail:
+          type: string
+          description: Product thumbnail
+        code:
+          type: string
+          description: Product code
+        stock:
+          type: integer
+          description: Product stock
+        status:
+          type: string
+          description: Product status
+        category:
+          type: string
+          description: Product category
+      example:
+        _id: 5f9b3b3b3b3b3b3b3b3b3b3b
+        title: Product title
+        description: Product description
+        price: 1000
+        thumbnail: Product thumbnail
+        code: Product code
+        stock: 100
+        status: Product status
+        category: Product category
+  requestBodies:
+    addCart:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+      example:
+        products:
+          - _id: 5f9b3b3b3b3b3b3b3b3b3b3b
+            title: Product title
+            description: Product description
+            price: 1000
+            thumbnail: Product thumbnail
+            code: Product code
+            stock: 100
+            status: Product status
+            category: Product category
+    addProductToCart:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          description: Product quantity
+        product:
+          type: object
+          $ref: "#/components/schemas/Product"
+      example:
+        quantity:
+          type: integer
+          description: Product quantity
+        product:
+          _id: 5f9b3b3b3b3b3b3b3b3b3b3b
+          title: Product title
+          description: Product description
+          price: 1000
+          thumbnail: Product thumbnail
+          code: Product code
+          stock: 100
+          status: Product status
+          category: Product category
+    updateCart:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          description: Product quantity
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+      example:
+        quantity:
+          type: integer
+          description: Product quantity
+        products:
+          - _id: 5f9b3b3b3b3b3b3b3b3b3b3b
+            title: Product title
+            description: Product description
+            price: 1000
+            thumbnail: Product thumbnail
+            code: Product code
+            stock: 100
+            status: Product status
+            category: Product category
+    updateProductFromCart:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+      example:
+        products:
+          - _id: 5f9b3b3b3b3b3b3b3b3b3b3b
+            title: Product title
+            description: Product description
+            price: 1000
+            thumbnail: Product thumbnail
+            code: Product code
+            stock: 100
+            status: Product status
+            category: Product category

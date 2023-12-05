@@ -1,0 +1,23 @@
+<h1>Login</h1>
+<form method="post" action="/api/sessions/login">
+  <label for="email">Email</label>
+  <input type="email" name="email" id="email" />
+
+  <label for="password">Password</label>
+  <input type="password" name="password" id="password" />
+
+  <button type="submit">Login</button>
+</form>
+
+{{#if requiredLogin}}
+  <script>
+    alert('Debes iniciar sesión para ver esta página');
+  </script>
+{{/if}}
+{{#if failedLogin}}
+  <script>
+    alert('Error al iniciar sesión');
+  </script>
+{{/if}}
+
+<a href="/register" target="_self">Register</a>
