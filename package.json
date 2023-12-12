@@ -5,12 +5,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha src/test/**/*.test.js",
     "start-dev": "nodemon src/app.js --mode development",
     "start-prod": "nodemon src/app.js --mode production",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css,scss,handlebars}\""
   },
-  "author": "confaa",
+  "author": "franjimenxz",
   "license": "ISC",
   "dependencies": {
     "@faker-js/faker": "^8.2.0",
@@ -34,5 +34,10 @@
     "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1",
     "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
   }
 }
