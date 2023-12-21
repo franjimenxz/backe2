@@ -90,6 +90,14 @@ export const getProductById = async (req, res) => {
 
 export const addProduct = async (req, res) => {
   try {
+    if (req.user.role === "user") {
+      CustomError.createError({
+        name: "Unauthorized",
+        message: "Unauthorized",
+        code: ErrorCodes.UNAUTHORIZED,
+      });
+    }
+    req.body.owner = req.user.email;
     let response = await productService.addProduct(new ProductDTO(req.body));
     res.send({
       status: "success",
@@ -134,7 +142,32 @@ export const updateProductById = async (req, res) => {
 export const deleteProductById = async (req, res) => {
   try {
     let pid = req.params.pid;
+
     if (mongoose.Types.ObjectId.isValid(pid)) {
+      if (req.user.role === "user") {
+        CustomError.createError({
+          name: "Unauthorized",
+          message: "Unauthorized",
+          code: ErrorCodes.UNAUTHORIZED,
+        });
+      }
+      let product = productService.getProductById(pid);
+      if (
+        product.owner !== req.user.email ||
+        (product.owner !== req.user.email && req.user.role !== "admin")
+      ) {
+        CustomError.createError({
+          name: "Unauthorized",
+          message: "Unauthorized",
+          code: ErrorCodes.UNAUTHORIZED,
+        });
+      } else {
+        let response = await productService.deleteProductById(pid);
+        res.status(200).send({
+          status: "success",
+          payload: response,
+        });
+      }
       let response = await productService.deleteProductById(pid);
       res.status(200).send({
         status: "success",

@@ -91,6 +91,15 @@ export const addProductToCart = async (req, res) => {
       mongoose.Types.ObjectId.isValid(pid) &&
       mongoose.Types.ObjectId.isValid(cid)
     ) {
+      let user = await userService.getUser(req.user.email);
+      let product = await productService.getProductById(pid);
+      if (user.email === product.owner) {
+        CustomError.createError({
+          name: "Unauthorized",
+          message: "Unauthorized",
+          code: ErrorCodes.UNAUTHORIZED,
+        });
+      }
       let response = await cartService.addProductToCart(
         cid,
         pid,
@@ -110,11 +119,6 @@ export const addProductToCart = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(400).send({
-      status: "error",
-      message: error.message,
-      payload: [],
-    });
   }
 };
 
@@ -138,11 +142,6 @@ export const deleteProductFromCart = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(400).send({
-      status: "error",
-      message: error.message,
-      payload: [],
-    });
   }
 };
 
@@ -165,11 +164,6 @@ export const updateCart = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(400).send({
-      status: "error",
-      message: error.message,
-      payload: [],
-    });
   }
 };
 
@@ -192,11 +186,6 @@ export const updateProductFromCart = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(400).send({
-      status: "error",
-      message: error.message,
-      payload: [],
-    });
   }
 };
 
@@ -214,11 +203,6 @@ export const emptyCart = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(400).send({
-      status: "error",
-      message: error.message,
-      payload: [],
-    });
   }
 };
 
@@ -243,10 +227,5 @@ export const purchaseCart = async (req, res) => {
     await ticketService.addTicket(cartInStock, req.user.email);
   } catch (error) {
     console.log(error);
-    res.status(400).send({
-      status: "error",
-      message: "Error to purchase cart",
-      payload: [],
-    });
   }
 };

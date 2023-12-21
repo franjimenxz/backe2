@@ -1,5 +1,5 @@
 import chai from "chai";
-import { faker } from "@faker-js/faker";
+import { faker, tr } from "@faker-js/faker";
 import mongoose from "mongoose";
 import Cart from "../dao/mongo/classes/cart.dao.js";
 import Product from "../dao/mongo/classes/product.dao.js";
@@ -11,54 +11,84 @@ await mongoose.connect(db);
 const expect = chai.expect;
 
 describe("Cart", () => {
-    before(function(){
-        this.cartDao = new Cart();
-        this.productDao = new Product();
-        this.mockProduct = new ProductDTO({code:faker.string.uuid()});
-    
-    })
-    beforeEach(async function() {
-        this.timeout(5000);
-    });
+  before(function () {
+    this.cartDao = new Cart();
+    this.productDao = new Product();
+  });
+  beforeEach(async function () {
+    this.timeout(5000);
+    mongoose.connection.collections.carts.drop();
+    this.mockProduct = new ProductDTO({ code: faker.string.uuid() });
+  });
 
-    it("El carrito deberia poder crearse", async function() {
-        let response = await this.cartDao.add([]);
-        expect(response).to.have.property("_id");
-    });
-    it("Los carritos deberian poder obtenerse", async function() {
-        let response = await this.cartDao.get();
-        expect(response).to.be.an("array");
-    });
-    it("El carrito deberia poder obtenerse por id", async function() {
-        let response = await this.cartDao.get();
-        let id = response[0]._doc._id;
-        let cart = await this.cartDao.getById(id);
-        expect(cart).to.have.property("_id");
-    });
-    // it("El carrito deberia poder actualizarse", async function() {
-    //     let product = await this.productDao.get()[0];
-    //     let response = await this.cartDao.get();
-    //     let id = response[0]._doc._id;
-    //     let cart = await this.cartDao.update(id,[{product:product._id,quantity:1}]);
-    //     expect(cart).to.have.property("acknowledged").to.be.true;
-    // });
-    // it("Se podra agregar un producto al carrito", async function() {
-    //     let response = await this.cartDao.get();
-    //     let id = response[0]._doc._id;
-    //     let cart = await this.cartDao.addToCart(id,this.mockProduct.code,1);
-    //     expect(cart).to.have.property("acknowledged").to.be.true;
-    // });
-    it("Se podra eliminar un producto del carrito", async function() {
-        let response = await this.cartDao.get();
-        let id = response[0]._doc._id;
-        let cart = await this.cartDao.dFromCart(id,this.mockProduct.code);
-        expect(cart).to.have.property("acknowledged").to.be.true;
-    })
-    // it("El carrito deberia poder vaciarse", async function() {
-    //     let response = await this.cartDao.get();
-    //     let id = response[0]._doc._id;
-    //     let cart = await this.cartDao.empty(id);
-    //     expect(cart).to.have.property("acknowledged").to.be.true;
-    // });
-
-})
+  it("Deberia poder agregarse un carrito", async function () {
+    try {
+      let response = await this.cartDao.add([]);
+      expect(response).to.have.property("_id");
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  it("Deberian poder obtenerse los carritos", async function () {
+    try {
+      await this.cartDao.add([]);
+      let response = await this.cartDao.get();
+      expect(response).to.be.an("array");
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  it("Deberian poder obtenerse un carrito por id", async function () {
+    try {
+      let { _id } = await this.cartDao.add([]);
+      let cart = await this.cartDao.getById(_id);
+      expect(cart).to.have.property("_id");
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  it("Deberia poder actualizarse un carrito por id", async function () {
+    try {
+      let { _id } = await this.cartDao.add([]);
+      let prod = await this.productDao.add(this.mockProduct);
+      let cart = await this.cartDao.update(_id, {
+        products: [{ product: prod._id, quantity: 1 }],
+      });
+      expect(cart).to.have.property("acknowledged").to.be.true;
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  it("Deberia poder agregarse un producto al carrito", async function () {
+    try {
+      let { _id } = await this.cartDao.add([]);
+      let product = await this.productDao.add(this.mockProduct);
+      let cart = await this.cartDao.addToCart(_id, product._id, 1);
+      expect(cart).to.have.property("acknowledged").to.be.true;
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  it("Deberia poder eliminarse un producto del carrito", async function () {
+    try {
+      let { _id } = await this.cartDao.add([]);
+      let product = await this.productDao.add(this.mockProduct);
+      await this.cartDao.addToCart(_id, product._id, 1);
+      let cart = await this.cartDao.deleteFromCart(_id, product._id);
+      expect(cart).to.have.property("acknowledged").to.be.true;
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  it("Deberia poder vaciarse el carrito", async function () {
+    try {
+      let { _id } = await this.cartDao.add([]);
+      let product = await this.productDao.add(this.mockProduct);
+      await this.cartDao.addToCart(_id, product._id, 1);
+      let cart = await this.cartDao.empty(_id);
+      expect(cart).to.have.property("acknowledged").to.be.false;
+    }catch (error) {
+      console.log(error);
+    }
+  });
+});

@@ -4,5 +4,6 @@ const ErrorCodes = {
   DATABASE_ERROR: 3,
   INVALID_PARAM: 4,
   NOT_FOUND_ERROR: 5,
+  UNAUTHORIZED: 6,
 };
 export default ErrorCodes;

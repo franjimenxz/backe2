@@ -4,8 +4,8 @@ const swaggerOptions = {
   definition: {
     openapi: "3.1.0",
     info: {
-      title: "Ecommerce",
-      description: "Ecommerce documentation",
+      title: "Markdo-api",
+      description: "Markdo-api documentation",
       version: "0.0.1",
     },
   },

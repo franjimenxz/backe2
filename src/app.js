@@ -4,8 +4,6 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import initPassport from "./config/passport.config.js";
 import mongoose from "mongoose";
-import swaggerUiExpress from "swagger-ui-express";
-import specs from "./config/swagger.config.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import productsViewRouter from "./routes/productsView.router.js";
@@ -18,6 +16,11 @@ import loggerRouter from "./routes/logger.router.js";
 import errorHandler from "./middlewares/errors/index.js";
 import config from "./config/config.js";
 import { addLogger } from "./util/logger/custom.logger.js";
+import recoveryRouter from "./routes/recovery.router.js";
+import recoveryViewRouter from "./routes/recoveryView.router.js";
+import permisionsRouter from "./routes/permisions.router.js";
+import specs from "./config/swagger.config.js";
+import swaggerUiExpress from "swagger-ui-express";
 
 const app = express();
 
@@ -28,6 +31,10 @@ app.use(cookieParser());
 app.use(addLogger);
 initPassport();
 app.use(passport.initialize());
+
+// Docs
+
+app.use("/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
@@ -40,19 +47,19 @@ try {
 } catch (error) {
   console.log(error);
 }
-// Docs
-app.use("/api-docs",swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
-
 // Routers
 app.use("/", userViewRouter);
 app.use("/", mockingRouter);
 app.use("/", loggerRouter);
-app.use("/api/sessions", userRouter);
+app.use("/api/users", userRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/products", productsViewRouter);
 app.use("/carts", cartsViewRouter);
+app.use("/api/recovery", recoveryRouter);
+app.use("/", recoveryViewRouter);
+app.use("/api/users", permisionsRouter);
 app.use(errorHandler);
 const port = config.PORT || 8080;
 

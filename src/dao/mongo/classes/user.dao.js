@@ -26,6 +26,23 @@ class User {
       return null;
     }
   };
+
+  update = async (email, data) => {
+    try {
+      return await userModel.updateOne({ email }, { $set: data });
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
+  getById = async (id) => {
+    try {
+      return await userModel.findById(id);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
 }
 
 export default User;

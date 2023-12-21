@@ -12,9 +12,6 @@ class Cart {
   get = async () => {
     try {
       let result = await cartModel.find();
-      if (result.length === 0) {
-        result = null;
-      }
       return result;
     } catch (error) {
       console.log(error);

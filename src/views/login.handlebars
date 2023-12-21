@@ -1,11 +1,9 @@
 <h1>Login</h1>
-<form method="post" action="/api/sessions/login">
+<form method="post" action="/api/users/login">
   <label for="email">Email</label>
   <input type="email" name="email" id="email" />
-
   <label for="password">Password</label>
   <input type="password" name="password" id="password" />
-
   <button type="submit">Login</button>
 </form>
 
@@ -21,3 +19,4 @@
 {{/if}}
 
 <a href="/register" target="_self">Register</a>
+<a href="/forgot-password" target="_self">Forgot Password</a>

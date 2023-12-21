@@ -14,4 +14,12 @@ export default class UserRepository {
   async addCartToUser(email, id) {
     return await this.dao.addCart(email, id);
   }
+
+  async updateUser(email, data) {
+    return await this.dao.update(email, data);
+  }
+
+  async getUserById(id) {
+    return await this.dao.getById(id);
+  }
 }
